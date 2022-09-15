@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1663201512 source:/home/joao/Desktop/ContactList/main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1663275190 source:/home/joao/Documents/C/Estruturas/ContactList/main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+

@@ -18,7 +18,7 @@ void SelectionSort(int vetor[], int tamanho){
     for(i=0;i<tamanho-1;i++){
         IndiceMenor = i;
         for(j=i+1; j<tamanho;j++){
-            if(vetor[IndiceMenor] < vetor[j])
+            if(vetor[IndiceMenor] > vetor[j])
                 IndiceMenor = j;
         }
         aux = vetor[i];

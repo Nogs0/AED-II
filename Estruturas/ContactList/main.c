@@ -1,0 +1,246 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct
+{
+    char nome[50];
+    char telefone[15];
+
+} AgendaTel;
+
+typedef struct no
+{
+    struct no *ant;
+    AgendaTel contato;
+    struct no *prox;
+} No;
+
+typedef struct lista
+{
+    No *inicio;
+    No *fim;
+    int primaryKey;
+} Lista;
+
+void criarLista(Lista *lista);
+int EstaVazia(Lista lista);
+int insere(Lista *lista, AgendaTel);
+void ImprimirLista(Lista);
+int inserirOrdenado(Lista *lista, AgendaTel );
+No* removerContato(Lista *lista, char *);
+No* buscarContato(Lista *lista, char *);
+int main()
+{
+    int option;
+    AgendaTel contato;
+    No *auxiliar;
+    Lista lista;
+    criarLista(&lista);
+    do
+    {
+        printf("Escolha o que você deseja fazer:\n1-Inserir no Final\n2-Inserir Ordenado\n3-Visualizar Lista\n4-Buscar Elemento na Lista\n5-Remover Elemento\n6-Sair do programa\n");
+        scanf("%d", &option);
+
+        switch(option)
+        {
+        case 1:
+            printf("\n\tAdicionando um novo contato ao final da lista...\n");
+            printf("Digite o nome: ");
+            scanf(" %49[^\n]", contato.nome);
+            printf("Digite o telefone: ");
+            scanf(" %14[^\n]", contato.telefone);
+            insere(&lista, contato);
+            break;
+        case 2:
+            printf("\n\tAdicionando um novo contato...\n");
+            printf("Digite o nome: ");
+            scanf(" %49[^\n]", contato.nome);
+            printf("Digite o telefone: ");
+            scanf(" %14[^\n]", contato.telefone);
+            inserirOrdenado(&lista, contato);
+            break;
+        case 3:
+            if(lista.inicio != NULL)
+            {
+                printf("\n\t----------LISTA---------\n");
+
+                ImprimirLista(lista);
+            }
+            else printf("\n\tLista Vazia!\n");
+            break;
+        case 4:
+            if(lista.inicio)
+            {
+                printf("\n\tBuscando contato...\n");
+                printf("Digite o nome: ");
+                scanf(" %49[^\n]", contato.nome);
+                if(lista.inicio)
+                    auxiliar = buscarContato(&lista, contato.nome);
+                if(auxiliar)
+                    printf("Nome: %s\nTelefone: %s\n", auxiliar->contato.nome, auxiliar->contato.telefone);
+                else printf("\n\tNão foi encontrado!\n");
+            }
+            else printf("Lista vazia!\n");
+            break;
+        case 5:
+            printf("\n\tRemovendo um contato...\n");
+            if(lista.inicio != NULL)
+            {
+                printf("Digite o nome: ");
+                scanf("%49[^\n]", contato.nome);
+                auxiliar = removerContato(&lista, contato.nome);
+                printf("%s foi removido\n\n", auxiliar->contato.nome);
+            }
+            else printf("\t\nLista vazia!\n");
+            break;
+        case 6:
+            printf("\tSaindo do programa...\n");
+        }
+    }
+    while(option != 6);
+    return 0;
+}
+
+void criarLista(Lista *lista)
+{
+    lista->inicio =NULL;
+    lista->fim =NULL;
+
+}
+
+int insere(Lista *lista, AgendaTel contato)
+{
+    No *aux = malloc(sizeof(No));
+    if(aux == NULL)
+        return 0;
+
+    if(lista->inicio == NULL)
+    {
+        aux->contato = contato;
+        lista->inicio = lista->fim = aux;
+        aux->ant = lista->fim;
+        aux->prox = lista->inicio;
+        return 1;
+    }
+
+    aux->contato = contato;
+    aux->ant = lista->fim;
+    lista->fim->prox = aux;
+    aux->prox = lista->inicio;
+    lista->inicio->ant = aux;
+    lista->fim = aux;
+    return 1;
+}
+
+void ImprimirLista(Lista lista)
+{
+    No *aux;
+    aux = lista.inicio;
+
+    do
+    {
+        printf("Nome: %s\nTelefone: %s\n", aux->contato.nome, aux->contato.telefone);
+        printf("--------------------------\n");
+        aux= aux->prox;
+    }
+    while(aux != lista.inicio);
+}
+
+int EstaVazia(Lista lista)
+{
+    if(lista.inicio == NULL)
+        return 1;
+    return 0;
+}
+
+int inserirOrdenado(Lista *lista, AgendaTel contato)
+{
+    No *aux, *novo;
+
+    if(lista->inicio == NULL)
+        return insere(lista, contato);
+    else
+    {
+        aux = lista->inicio;
+        do
+        {
+            if(strcmp(aux->contato.nome, contato.nome) > 0)
+            {
+                novo = (No *)malloc(sizeof(No));
+                if(novo)
+                {
+                    novo->contato = contato;
+                    novo->prox = aux;
+                    novo->ant = aux->ant;
+                    aux->ant->prox = novo;
+                    aux->ant = novo;
+
+                    if(strcmp(lista->inicio->contato.nome, novo->contato.nome) > 0)
+                        lista->inicio = novo;
+                    return 1;
+                }
+                else return 0;
+            }
+            aux = aux->prox;
+        }
+        while(aux != lista->inicio);
+        insere(lista, contato);
+    }
+    return 1;
+}
+
+No* removerContato(Lista *lista, char *remover)
+{
+    No *aux = NULL;
+
+    if(lista->inicio != NULL)
+    {
+        aux = lista->inicio;
+        do
+        {
+            if(strcmp(aux->contato.nome, remover) == 0)
+            {
+
+                if(strcmp(lista->inicio->contato.nome, remover) == 0 && strcmp(lista->fim->contato.nome, remover) == 0)
+                {
+                    lista->inicio = NULL;
+                    lista->fim = NULL;
+                    return aux;
+                }
+
+                aux->ant->prox = aux->prox;
+                aux->prox->ant = aux->ant;
+
+                if(strcmp(remover, lista->inicio->contato.nome) == 0) lista->inicio = lista->inicio->prox;
+                if(strcmp(remover, lista->fim->contato.nome) == 0) lista->fim = lista->fim->ant;
+
+                return aux;
+            }
+            aux = aux->prox;
+        }
+        while(aux!=lista->inicio);
+        return NULL;
+    }
+    else
+        printf("Lista vazia!\n");
+    return NULL;
+}
+
+No* buscarContato(Lista *lista, char *buscado)
+{
+    No *aux;
+    aux = lista->inicio;
+    char nome[50];
+    strcpy(nome, buscado);
+    do
+    {
+        if(strcmp(aux->contato.nome, nome) == 0)
+        {
+            return aux;
+        }
+        aux=aux->prox;
+    }
+    while(aux!=lista->inicio);
+    return NULL;
+}
