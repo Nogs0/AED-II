@@ -1,0 +1,3 @@
+/home/joao/Documents/C/PtrString/cmake-build-debug/CMakeFiles/PtrString.dir
+/home/joao/Documents/C/PtrString/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/joao/Documents/C/PtrString/cmake-build-debug/CMakeFiles/rebuild_cache.dir
